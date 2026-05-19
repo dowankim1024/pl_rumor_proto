@@ -8,304 +8,214 @@ import {
   debateThreads,
   issues,
   playerOptions,
-  statusCopy,
   type Comment,
   type DebateThread,
   type Issue,
   type IssueType,
-  type RumorStatus,
   type VoteSide,
 } from "./prototype-data";
 
-type RouteKey =
-  | "home"
-  | "reels"
-  | "feed"
-  | "my-feed"
-  | "debate"
-  | "alerts"
-  | "admin"
-  | "onboarding";
+type RouteKey = "home" | "reels" | "feed" | "my-feed" | "debate" | "profile" | "onboarding";
 
-const navItems: Array<{ key: RouteKey; href: string; label: string }> = [
-  { key: "home", href: "/", label: "홈" },
-  { key: "reels", href: "/reels", label: "릴스" },
-  { key: "feed", href: "/feed", label: "전체 피드" },
-  { key: "my-feed", href: "/my-feed", label: "마이 피드" },
-  { key: "debate", href: "/debate", label: "누적 토론" },
-  { key: "alerts", href: "/alerts", label: "알림" },
-  { key: "admin", href: "/admin", label: "어드민" },
+const bottomNav: Array<{ key: RouteKey; href: string; label: string }> = [
+  { key: "feed", href: "/feed", label: "Feed" },
+  { key: "my-feed", href: "/my-feed", label: "My Team" },
+  { key: "debate", href: "/debate", label: "Debate" },
+  { key: "profile", href: "/profile", label: "Profile" },
+];
+
+const topNav: Array<{ key: RouteKey; href: string; label: string }> = [
+  { key: "home", href: "/home", label: "Home" },
+  { key: "feed", href: "/feed", label: "Feed" },
+  { key: "reels", href: "/reels", label: "Reels" },
+  { key: "debate", href: "/debate", label: "Debate" },
+  { key: "my-feed", href: "/my-feed", label: "My Team" },
+  { key: "profile", href: "/profile", label: "Profile" },
 ];
 
 const defaultClubs = ["토트넘", "맨유"];
 const defaultPlayers = ["손흥민", "브루노"];
 
-export function AppShell({
-  active,
-  children,
-  compact = false,
-}: {
-  active: RouteKey;
-  children: React.ReactNode;
-  compact?: boolean;
-}) {
-  return (
-    <main className="min-h-screen bg-[#f4f7f2] text-[#101714]">
-      <header
-        className={`sticky top-0 z-30 border-b border-[#dce5d8] bg-white/95 backdrop-blur ${
-          compact ? "hidden sm:block" : ""
-        }`}
-      >
-        <div className="mx-auto flex max-w-[1480px] flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
-          <Link className="flex items-center gap-3" href="/">
-            <span className="grid size-11 place-items-center rounded-[8px] bg-[#164a32] text-sm font-black text-white">
-              PL
-            </span>
-            <span>
-              <span className="block text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-                Rumor Feed
-              </span>
-              <span className="text-xl font-black">프리미어리그 이슈 피드</span>
-            </span>
-          </Link>
-          <nav className="flex gap-1 overflow-x-auto rounded-[8px] bg-[#eef3ea] p-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.key}
-                className={`flex h-10 shrink-0 items-center rounded-[6px] px-3 text-sm font-bold ${
-                  active === item.key
-                    ? "bg-[#101714] text-white"
-                    : "text-[#4d5a4c] hover:bg-white"
-                }`}
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </header>
-      {children}
-    </main>
-  );
-}
-
 export function HomePage() {
   return (
-    <AppShell active="home">
-      <section className="mx-auto grid min-h-[calc(100vh-74px)] max-w-[1480px] gap-6 px-4 py-6 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
-        <div>
-          <p className="text-sm font-black uppercase tracking-[0.26em] text-[#cc3b2f]">
-            MVP Prototype
-          </p>
-          <h1 className="mt-4 max-w-3xl text-5xl font-black leading-tight lg:text-7xl">
-            넘기고, 밀고, 투표하는 PL 이슈 서비스
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-[#4d5a4c]">
-            릴스에서는 모바일 쇼츠처럼 세로 스와이프로 이슈를 넘기고, 댓글 버튼
-            또는 오른쪽 스와이프로 댓글창을 엽니다.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              className="flex h-12 items-center rounded-[6px] bg-[#cc3b2f] px-5 text-sm font-black text-white"
-              href="/reels"
-            >
-              릴스 피드 보기
-            </Link>
-            <Link
-              className="flex h-12 items-center rounded-[6px] bg-[#101714] px-5 text-sm font-black text-white"
-              href="/feed"
-            >
-              전체 피드 보기
-            </Link>
-            <Link
-              className="flex h-12 items-center rounded-[6px] border border-[#bfd0b8] px-5 text-sm font-black text-[#164a32]"
-              href="/debate"
-            >
-              누적 토론 보기
-            </Link>
+    <PublicShell active="home">
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-6 lg:py-10">
+        <div className="min-w-0">
+          <div className="rounded-[8px] border border-[#273244] bg-[#111827] p-5 sm:p-7">
+            <Badge tone="live">LIVE RUMOR HUB</Badge>
+            <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight text-[#F9FAFB] sm:text-6xl">
+              프리미어리그 루머를 넘기고, 검증하고, 토론하세요
+            </h1>
+            <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-[#9CA3AF]">
+              TIER ONE은 트위터/X의 공신력 있는 축구 기자 트윗을 가장 빠르게 수집해 이슈 카드, 투표, 대댓글 토론, 팀 맞춤 피드로 정리하는 PL 루머 피드입니다.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link className="btn-primary" href="/reels">
+                릴스 피드 보기
+              </Link>
+              <Link className="btn-secondary" href="/feed">
+                전체 피드
+              </Link>
+              <Link className="btn-secondary" href="/debate">
+                누적 토론
+              </Link>
+            </div>
           </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <MetricCard label="Live cards" value={String(issues.length)} />
+            <MetricCard label="Debate rooms" value={String(debateThreads.length)} />
+            <MetricCard label="Fan comments" value={String(issues.reduce((sum, issue) => sum + countComments(issue.comments), 0))} />
+          </div>
+
+          <section className="mt-6">
+            <SectionHeader title="지금 뜨는 이슈" actionHref="/feed" actionLabel="전체 보기" />
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              {issues.slice(0, 4).map((issue) => (
+                <IssueCard key={issue.id} issue={issue} compact />
+              ))}
+            </div>
+          </section>
         </div>
 
-        <div className="grid gap-3">
-          {[
-            ["릴스형 피드", "스크롤/스와이프 + 쇼츠형 댓글", "/reels"],
-            ["전체 피드", `${issues.length}개 이슈 데이터`, "/feed"],
-            ["누적 토론", "여러 토론방 목록과 상세 분석", "/debate"],
-            ["어드민", "수집 대기열과 게시 검수", "/admin"],
-          ].map(([title, body, href]) => (
-            <Link
-              key={title}
-              className="rounded-[8px] border border-[#dce5d8] bg-white p-5 shadow-sm hover:border-[#164a32]"
-              href={href}
-            >
-              <span className="text-2xl font-black">{title}</span>
-              <span className="mt-2 block text-sm font-bold text-[#5d6a5b]">{body}</span>
-            </Link>
-          ))}
-        </div>
+        <aside className="grid gap-4 lg:sticky lg:top-20 lg:self-start">
+          <SidePanel title="빠른 이동">
+            <div className="grid gap-2">
+              <Link className="side-link bg-[#7C3AED] text-white" href="/reels">
+                모바일 릴스 피드
+              </Link>
+              <Link className="side-link" href="/onboarding">
+                팀 선택하고 맞춤 피드 만들기
+              </Link>
+              <Link className="side-link" href="/profile">
+                내 프로필과 배지
+              </Link>
+            </div>
+          </SidePanel>
+          <DebateDigest />
+        </aside>
       </section>
-    </AppShell>
+    </PublicShell>
   );
 }
 
 export function ReelsPage() {
   const [activeIssueId, setActiveIssueId] = useState(issues[0].id);
-  const [sheetIssue, setSheetIssue] = useState<Issue | null>(null);
   const [votes, setVotes] = useState<Record<string, VoteSide>>({});
-  const activeIssue = issues.find((issue) => issue.id === activeIssueId) ?? issues[0];
-  const activeIndex = issues.findIndex((issue) => issue.id === activeIssue.id);
   const horizontalRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const openMobileComments = (issue: Issue) => {
-    setSheetIssue(issue);
-    const scroller = horizontalRefs.current[issue.id];
-    scroller?.scrollTo({ left: scroller.clientWidth, behavior: "smooth" });
+  const openComments = (issue: Issue) => {
+    horizontalRefs.current[issue.id]?.scrollTo({
+      left: horizontalRefs.current[issue.id]?.clientWidth ?? 0,
+      behavior: "smooth",
+    });
   };
 
   return (
-    <AppShell active="reels" compact>
-      <div className="grid h-screen bg-[#101714] sm:h-[calc(100vh-74px)] lg:grid-cols-[minmax(0,1fr)_420px]">
-        <section
-          className="snap-y snap-mandatory overflow-y-auto scroll-smooth"
-          onScroll={(event) => {
-            const scroller = event.currentTarget;
-            const index = Math.round(scroller.scrollTop / scroller.clientHeight);
-            const issue = issues[Math.min(Math.max(index, 0), issues.length - 1)];
-            if (issue && issue.id !== activeIssueId) {
-              setActiveIssueId(issue.id);
-              setSheetIssue(null);
-            }
-          }}
-          style={{ touchAction: "pan-y" }}
-        >
-          {issues.map((issue, index) => (
+    <main className="h-dvh overflow-hidden bg-[#080A12] text-[#F9FAFB]">
+      <section
+        className="h-full snap-y snap-mandatory overflow-y-auto scroll-smooth"
+        onScroll={(event) => {
+          const scroller = event.currentTarget;
+          const index = Math.round(scroller.scrollTop / scroller.clientHeight);
+          const issue = issues[Math.min(Math.max(index, 0), issues.length - 1)];
+          if (issue && issue.id !== activeIssueId) {
+            setActiveIssueId(issue.id);
+          }
+        }}
+        style={{ touchAction: "pan-y" }}
+      >
+        {issues.map((issue) => (
+          <div key={issue.id} className="h-dvh snap-start snap-always overflow-hidden">
             <div
-              key={issue.id}
-              className="h-screen snap-start snap-always overflow-hidden sm:h-[calc(100vh-74px)]"
+              ref={(node) => {
+                horizontalRefs.current[issue.id] = node;
+              }}
+              className="flex h-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+              style={{ touchAction: "pan-x pan-y" }}
             >
-              <div
-                ref={(node) => {
-                  horizontalRefs.current[issue.id] = node;
-                }}
-                className="flex h-full snap-x snap-mandatory overflow-x-auto scroll-smooth lg:overflow-x-hidden"
-                style={{ touchAction: "pan-x pan-y" }}
-              >
-                <ReelCard
-                  issue={issue}
-                  issueIndex={index}
-                  totalIssues={issues.length}
-                  vote={votes[issue.id]}
-                  onVote={(side) => setVotes((current) => ({ ...current, [issue.id]: side }))}
-                  onOpenComments={() => openMobileComments(issue)}
-                />
-                <div className="h-full w-full shrink-0 snap-start bg-white lg:hidden">
-                  <ShortsCommentPanel issue={issue} />
-                </div>
+              <ReelScreen
+                issue={issue}
+                vote={votes[issue.id]}
+                onVote={(side) => setVotes((current) => ({ ...current, [issue.id]: side }))}
+                onOpenComments={() => openComments(issue)}
+              />
+              <div className="h-full w-full shrink-0 snap-start bg-[#111827] md:w-[420px]">
+                <ShortsCommentPanel issue={issue} />
               </div>
             </div>
-          ))}
-        </section>
-        <aside className="hidden overflow-y-auto border-l border-white/15 bg-white lg:block">
-          <ShortsCommentPanel issue={activeIssue} />
-        </aside>
-
-        <div className="pointer-events-none fixed right-3 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-2 text-center text-xs font-black text-white/80 sm:flex lg:left-[calc(100%-458px)] lg:right-auto">
-          <span className="rounded-[6px] bg-black/40 px-2 py-1">
-            {activeIndex + 1}/{issues.length}
-          </span>
-          <span className="rounded-[6px] bg-black/40 px-2 py-1">스크롤</span>
-        </div>
-
-        {sheetIssue ? (
-          <div className="fixed inset-x-0 bottom-0 z-40 max-h-[78vh] overflow-hidden rounded-t-[14px] bg-white shadow-2xl lg:hidden">
-            <ShortsCommentPanel issue={sheetIssue} onClose={() => setSheetIssue(null)} />
           </div>
-        ) : null}
-      </div>
-    </AppShell>
+        ))}
+      </section>
+    </main>
   );
 }
 
-function ReelCard({
+function ReelScreen({
   issue,
-  issueIndex,
-  totalIssues,
   vote,
   onVote,
   onOpenComments,
 }: {
   issue: Issue;
-  issueIndex: number;
-  totalIssues: number;
   vote?: VoteSide;
   onVote: (side: VoteSide) => void;
   onOpenComments: () => void;
 }) {
   return (
-    <article className="relative flex h-full w-full shrink-0 snap-start flex-col justify-between overflow-hidden px-5 py-6 sm:px-9">
-      <div className={`absolute inset-0 bg-gradient-to-br ${issue.tone}`} />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(16,23,20,.08)_1px,transparent_1px),linear-gradient(0deg,rgba(16,23,20,.08)_1px,transparent_1px)] bg-[size:42px_42px]" />
-      <div className="relative flex items-start justify-between">
-        <IssueBadge type={issue.type} />
-        <span className="rounded-[6px] bg-white/85 px-3 py-2 text-xs font-black">
-          {issueIndex + 1} / {totalIssues}
-        </span>
+    <article className="relative flex h-full w-full shrink-0 snap-start flex-col justify-between overflow-hidden bg-[#080A12] px-5 py-5 text-[#F9FAFB] md:px-10 lg:px-[10vw]">
+      <img
+        alt={issue.imageAlt}
+        className="absolute inset-0 h-full w-full object-cover"
+        src={issue.image}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#080A12]/50 via-[#080A12]/55 to-[#080A12]/95" />
+      <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-[#7C3AED]/25 to-transparent" />
+      <div className="relative flex items-center justify-between">
+        <BrandMini />
+        <Link className="rounded-full bg-[#1F2937] px-4 py-2 text-sm font-black" href="/home">
+          홈
+        </Link>
       </div>
-      <div className="relative max-w-4xl">
-        <div className="mb-5 flex flex-wrap gap-2">
-          <StatusPill status={issue.status} />
-          <span className="rounded-[6px] bg-white/85 px-3 py-1 text-xs font-black">
-            {issue.tier}
-          </span>
-          <span className="rounded-[6px] bg-white/85 px-3 py-1 text-xs font-black">
-            출처 {issue.source}
-          </span>
+
+      <div className="relative mx-auto w-full max-w-3xl">
+        <div className="mb-4 flex items-center gap-2">
+          <Badge tone={issue.type}>{issue.type === "forum" ? "LIVE" : issue.type === "poll" ? "POLL" : issue.tier}</Badge>
+          <span className="text-xs font-bold text-[#9CA3AF]">{issue.source}</span>
         </div>
-        <h2 className="max-w-4xl text-balance text-4xl font-black leading-tight sm:text-6xl">
-          {issue.title}
-        </h2>
-        <p className="mt-5 max-w-2xl text-lg font-bold leading-8 text-[#263226]">
-          {issue.summary}
-        </p>
-        {issue.type !== "normal" && issue.votes ? (
-          <div className="mt-6 grid max-w-3xl gap-3 md:grid-cols-[1fr_1fr]">
-            <Argument label="찬성 근거" text={issue.agreeReason ?? ""} side="agree" />
-            <Argument label="반대 근거" text={issue.disagreeReason ?? ""} side="disagree" />
-            <div className="rounded-[8px] bg-white/90 p-4 md:col-span-2">
+        <div className="rounded-[8px] border border-[#273244] bg-[#111827]/90 p-5 shadow-2xl backdrop-blur sm:p-7">
+          <h1 className="text-3xl font-black leading-tight sm:text-5xl">{issue.title}</h1>
+          <p className="mt-4 text-sm font-semibold leading-7 text-[#9CA3AF] sm:text-base">{issue.summary}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Tag>{issue.status}</Tag>
+            {issue.tags.slice(0, 3).map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </div>
+          {issue.votes ? (
+            <div className="mt-6">
               <VotingBox issue={issue} selected={vote} onVote={onVote} />
             </div>
-          </div>
-        ) : null}
-      </div>
-      <div className="relative flex flex-col gap-4">
-        <div className="flex flex-wrap gap-2">
-          {issue.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-[6px] bg-[#101714]/80 px-3 py-1 text-sm font-bold text-white"
-            >
-              {tag}
-            </span>
-          ))}
+          ) : null}
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            className="h-12 rounded-[6px] bg-[#101714] px-5 text-sm font-black text-white"
-            onClick={onOpenComments}
-            type="button"
-          >
-            댓글 {countComments(issue.comments)}
+      </div>
+
+      <div className="relative mx-auto flex w-full max-w-3xl items-end justify-between gap-3 pb-16 md:pb-0">
+        <div>
+          <p className="text-sm font-bold text-[#9CA3AF]">
+            {countComments(issue.comments)} comments · {issue.saves.toLocaleString("ko-KR")} saves
+          </p>
+          <p className="mt-1 text-xs font-semibold text-[#9CA3AF]">오른쪽으로 스와이프하면 댓글창</p>
+        </div>
+        <div className="grid gap-2">
+          <button className="action-pill" onClick={onOpenComments} type="button">
+            댓글
           </button>
           {issue.type === "forum" ? (
-            <Link
-              className="flex h-12 items-center rounded-[6px] bg-[#cc3b2f] px-5 text-sm font-black text-white"
-              href={`/debate/${issue.id}`}
-            >
-              토론 들어가기
+            <Link className="action-pill bg-[#A3E635] text-[#080A12]" href={`/debate/${issue.id}`}>
+              토론
             </Link>
           ) : null}
-          <Metric label="저장" value={issue.saves.toLocaleString("ko-KR")} />
         </div>
       </div>
     </article>
@@ -315,357 +225,603 @@ function ReelCard({
 export function FeedPage({ personalized = false }: { personalized?: boolean }) {
   const list = personalized
     ? issues.filter(
-        (issue) =>
-          issue.clubs.some((club) => defaultClubs.includes(club)) ||
-          issue.players.some((player) => defaultPlayers.includes(player)),
-      )
+      (issue) =>
+        issue.clubs.some((club) => defaultClubs.includes(club)) ||
+        issue.players.some((player) => defaultPlayers.includes(player)),
+    )
     : issues;
 
   return (
-    <AppShell active={personalized ? "my-feed" : "feed"}>
-      <section className="mx-auto max-w-[1480px] px-4 py-6">
-        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-              {personalized ? "My Feed" : "Issue Feed"}
-            </p>
-            <h1 className="mt-2 text-4xl font-black">
-              {personalized ? "마이 피드" : "전체 피드"}
-            </h1>
-            <p className="mt-2 text-sm font-bold text-[#5d6a5b]">
-              {list.length}개 이슈 · 댓글/대댓글/투표 상태 포함
-            </p>
+    <PublicShell active={personalized ? "my-feed" : "feed"}>
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-5 lg:grid-cols-[220px_minmax(0,1fr)_320px] lg:px-6">
+        <aside className="hidden lg:block">
+          <FilterPanel personalized={personalized} />
+        </aside>
+        <main className="min-w-0">
+          <SectionHeader
+            title={personalized ? "My Team Feed" : "전체 피드"}
+            description={personalized ? "선택한 팀과 선수 중심으로 정리된 루머입니다." : "루머, 투표, 토론 카드를 최신순으로 확인하세요."}
+          />
+          <div className="mt-4 grid gap-4">
+            {list.map((issue) => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
           </div>
-          <Link
-            className="flex h-11 w-fit items-center rounded-[6px] bg-[#cc3b2f] px-4 text-sm font-black text-white"
-            href="/reels"
-          >
-            릴스 형식으로 보기
-          </Link>
-        </div>
-        <div className="grid gap-4 lg:grid-cols-2">
-          {list.map((issue) => (
-            <IssueListCard key={issue.id} issue={issue} />
-          ))}
-        </div>
+        </main>
+        <aside className="hidden xl:grid xl:content-start xl:gap-4">
+          <DebateDigest />
+          <SidePanel title="내 관심 팀">
+            <div className="flex flex-wrap gap-2">
+              {defaultClubs.concat(defaultPlayers).map((item) => (
+                <span key={item} className="rounded-full bg-[#1F2937] px-3 py-2 text-sm font-bold text-[#F9FAFB]">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </SidePanel>
+        </aside>
       </section>
-    </AppShell>
+    </PublicShell>
   );
 }
 
 export function OnboardingPage() {
+  const [selectedClubs, setSelectedClubs] = useState(defaultClubs);
+  const [selectedPlayers, setSelectedPlayers] = useState(defaultPlayers);
+
+  const completeOnboarding = () => {
+    window.localStorage.setItem(
+      "tier-one-preferences",
+      JSON.stringify({ clubs: selectedClubs, players: selectedPlayers }),
+    );
+    window.location.href = "/home";
+  };
+
   return (
-    <AppShell active="onboarding">
-      <section className="mx-auto max-w-5xl px-4 py-8">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-          Onboarding
-        </p>
-        <h1 className="mt-2 text-4xl font-black">관심 클럽과 선수를 선택</h1>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <PreferenceBlock title="관심 클럽" options={clubOptions} selected={defaultClubs} />
-          <PreferenceBlock title="관심 선수" options={playerOptions} selected={defaultPlayers} />
-        </div>
-        <Link
-          className="mt-6 flex h-12 w-fit items-center rounded-[6px] bg-[#101714] px-5 text-sm font-black text-white"
-          href="/my-feed"
-        >
-          마이 피드로 이동
-        </Link>
+    <main className="min-h-screen bg-[#080A12] px-4 py-6 text-[#F9FAFB] lg:px-6">
+      <section className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[minmax(0,1fr)_390px]">
+        <main className="rounded-[8px] border border-[#273244] bg-[#111827] p-5 sm:p-8">
+          <BrandMini />
+          <div className="mt-10 max-w-3xl">
+            <Badge tone="tier1">FIRST SETUP</Badge>
+            <h1 className="mt-4 text-4xl font-black leading-tight sm:text-6xl">
+              좋아하는 팀과 선수를 먼저 알려주세요
+            </h1>
+            <p className="mt-4 text-base font-semibold leading-7 text-[#9CA3AF]">
+              선택한 팀과 선수는 My Team Feed, 알림, 토론 추천의 기준이 됩니다. 처음에는 관심사를 좁혀두고, 이후 프로필에서 언제든 바꿀 수 있는 흐름입니다.
+            </p>
+          </div>
+
+          <section className="mt-8">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-black">응원하는 팀</h2>
+                <p className="mt-1 text-sm font-semibold text-[#9CA3AF]">최대 3개까지 선택하세요.</p>
+              </div>
+              <span className="text-sm font-black text-[#A3E635]">{selectedClubs.length}/3</span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+              {clubOptions.concat(["풀럼", "울버햄튼", "웨스트햄", "에버턴"]).slice(0, 12).map((club, index) => {
+                const active = selectedClubs.includes(club);
+                return (
+                  <button
+                    key={club}
+                    className={`min-h-[88px] rounded-[6px] border px-4 text-left font-black transition ${active
+                        ? "border-[#7C3AED] bg-[#7C3AED] text-white"
+                        : index % 3 === 0
+                          ? "border-[#374151] bg-[#4B1F2E] text-white"
+                          : index % 3 === 1
+                            ? "border-[#374151] bg-[#16425F] text-white"
+                            : "border-[#374151] bg-[#1F2937] text-white"
+                      }`}
+                    onClick={() =>
+                      setSelectedClubs((current) =>
+                        active ? current.filter((item) => item !== club) : current.length >= 3 ? current : current.concat(club),
+                      )
+                    }
+                    type="button"
+                  >
+                    <span className="block text-xs text-white/60">CLUB</span>
+                    {club}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-black">관심 선수</h2>
+                <p className="mt-1 text-sm font-semibold text-[#9CA3AF]">선수 루머와 토론을 더 빨리 볼 수 있습니다.</p>
+              </div>
+              <span className="text-sm font-black text-[#A3E635]">{selectedPlayers.length}/5</span>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {playerOptions.map((player) => {
+                const active = selectedPlayers.includes(player);
+                return (
+                  <button
+                    key={player}
+                    className={`rounded-full border px-4 py-3 text-sm font-black transition ${active ? "border-[#A3E635] bg-[#A3E635] text-[#080A12]" : "border-[#374151] bg-[#1F2937] text-[#F9FAFB]"
+                      }`}
+                    onClick={() =>
+                      setSelectedPlayers((current) =>
+                        active ? current.filter((item) => item !== player) : current.length >= 5 ? current : current.concat(player),
+                      )
+                    }
+                    type="button"
+                  >
+                    {player}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button
+              className="inline-flex h-12 items-center rounded-[5px] bg-[#7C3AED] px-5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!selectedClubs.length && !selectedPlayers.length}
+              onClick={completeOnboarding}
+              type="button"
+            >
+              선택 완료하고 홈으로
+            </button>
+            <Link className="btn-secondary" href="/home">
+              나중에 선택
+            </Link>
+          </div>
+        </main>
+
+        <aside className="grid content-start gap-4">
+          <SidePanel title="선택 요약">
+            <div className="grid gap-4">
+              <PreferenceGroup label="팀" values={selectedClubs} />
+              <PreferenceGroup label="선수" values={selectedPlayers} />
+            </div>
+          </SidePanel>
+          <SidePanel title="맞춤 피드 미리보기">
+            <div className="grid gap-3">
+              {issues
+                .filter(
+                  (issue) =>
+                    issue.clubs.some((club) => selectedClubs.includes(club)) ||
+                    issue.players.some((player) => selectedPlayers.includes(player)),
+                )
+                .slice(0, 3)
+                .map((issue) => (
+                  <div key={issue.id} className="rounded-[6px] bg-[#1F2937] p-4">
+                    <img alt={issue.imageAlt} className="mb-3 h-28 w-full rounded-[4px] object-cover" src={issue.image} />
+                    <Badge tone={issue.type === "normal" ? "tier1" : issue.type}>{issue.type === "forum" ? "LIVE" : issue.tier}</Badge>
+                    <h3 className="mt-3 font-black leading-snug text-[#F9FAFB]">{issue.title}</h3>
+                  </div>
+                ))}
+            </div>
+          </SidePanel>
+        </aside>
       </section>
-    </AppShell>
+    </main>
   );
 }
 
 export function DebatePage() {
   return (
-    <AppShell active="debate">
-      <section className="mx-auto max-w-[1480px] px-4 py-6">
-        <div className="mb-5">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-            Debate Hub
-          </p>
-          <h1 className="mt-2 text-4xl font-black">누적 토론</h1>
-          <p className="mt-2 text-sm font-bold text-[#5d6a5b]">
-            토론은 하루 단위로 닫히지 않고, 반응이 살아 있는 주제들이 누적됩니다.
-          </p>
-        </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {debateThreads.map((thread) => (
-            <DebateCard key={thread.id} thread={thread} />
-          ))}
-        </div>
+    <PublicShell active="debate">
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-6">
+        <main className="min-w-0">
+          <SectionHeader title="진행 중인 토론" description="여러 토론을 누적해서 열어두고, 각 토론별 현황과 댓글 흐름을 확인합니다." />
+          <div className="mt-4 grid gap-4">
+            {debateThreads.map((thread) => (
+              <Link key={thread.id} className="block rounded-[8px] border border-[#273244] bg-[#111827] p-5 hover:border-[#7C3AED]" href={`/debate/${thread.id}`}>
+                <div className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)]">
+                  <img
+                    alt={issues.find((issue) => issue.id === thread.issueId)?.imageAlt ?? thread.title}
+                    className="h-40 w-full rounded-[6px] object-cover md:h-full"
+                    src={issues.find((issue) => issue.id === thread.issueId)?.image ?? issues[0].image}
+                  />
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge tone="forum">{thread.status}</Badge>
+                      <span className="text-sm font-bold text-[#9CA3AF]">{thread.openedAt}</span>
+                    </div>
+                    <h2 className="mt-3 text-2xl font-black leading-tight text-[#F9FAFB]">{thread.title}</h2>
+                    <p className="mt-2 text-sm font-semibold leading-6 text-[#9CA3AF]">{thread.analysis.summary}</p>
+                    <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                      <StatCard value={`${thread.votes.agree}%`} label="찬성" />
+                      <StatCard value={`${thread.votes.disagree}%`} label="반대" />
+                      <StatCard value={thread.participants.toLocaleString("ko-KR")} label="참여" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </main>
+        <aside className="grid content-start gap-4">
+          <DebateDigest />
+          <SidePanel title="토론 키워드">
+            <div className="flex flex-wrap gap-2">
+              {Array.from(new Set(debateThreads.flatMap((thread) => thread.analysis.keywords))).slice(0, 10).map((keyword) => (
+                <span key={keyword} className="rounded-full bg-[#1F2937] px-3 py-2 text-sm font-bold text-[#F9FAFB]">
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </SidePanel>
+        </aside>
       </section>
-    </AppShell>
+    </PublicShell>
   );
 }
 
 export function DebateDetailPage({ debateId }: { debateId: string }) {
   const thread = debateThreads.find((debate) => debate.id === debateId) ?? debateThreads[0];
   const issue = issues.find((item) => item.id === thread.issueId) ?? issues[0];
-  const [stance, setStance] = useState<VoteSide>("disagree");
   const [comment, setComment] = useState("");
 
   return (
-    <AppShell active="debate">
-      <section className="mx-auto grid max-w-[1480px] gap-4 px-4 py-6 lg:grid-cols-[1fr_420px]">
-        <div className="overflow-hidden rounded-[8px] border border-[#dce5d8] bg-white">
-          <header className="bg-[#101714] p-5 text-white">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#f0c46a]">
-              Live Debate
-            </p>
-            <h1 className="mt-2 text-3xl font-black">{thread.title}</h1>
-            <p className="mt-3 max-w-3xl text-sm font-semibold leading-6 text-white/75">
-              {issue.summary}
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Metric label="상태" value={thread.status} inverted />
-              <Metric label="참여자" value={thread.participants.toLocaleString("ko-KR")} inverted />
-              <Metric label="열림" value={thread.openedAt} inverted />
+    <PublicShell active="debate">
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-6">
+        <main className="min-w-0 rounded-[8px] border border-[#273244] bg-[#111827] p-5 sm:p-7">
+          <Link className="text-sm font-black text-[#A3E635]" href="/debate">
+            &lt; 토론 목록
+          </Link>
+          <div className="mt-5 overflow-hidden rounded-[8px] border border-[#273244] bg-[#1F2937]">
+            <img alt={issue.imageAlt} className="h-[220px] w-full object-cover sm:h-[320px]" src={issue.image} />
+          </div>
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <Badge tone="live">LIVE</Badge>
+            <Badge tone={issue.type === "normal" ? "tier1" : issue.type}>{issue.tier}</Badge>
+            <span className="text-sm font-bold text-[#9CA3AF]">{issue.source}</span>
+          </div>
+          <h1 className="mt-4 text-3xl font-black leading-tight text-[#F9FAFB] sm:text-5xl">{thread.title}</h1>
+          <p className="mt-4 text-base font-semibold leading-7 text-[#9CA3AF]">{issue.summary}</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-4">
+            <InfoCard label="STAGE" value={issue.status} />
+            <InfoCard label="TEAM" value={issue.clubs.join(", ")} />
+            <InfoCard label="COMMENTS" value={String(countComments(thread.comments))} />
+            <InfoCard label="SAVES" value={issue.saves.toLocaleString("ko-KR")} />
+          </div>
+          <AnalysisBox thread={thread} expanded />
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <PointList title="찬성 근거" points={thread.analysis.agreePoints} tone="agree" />
+            <PointList title="반대 근거" points={thread.analysis.disagreePoints} tone="disagree" />
+          </div>
+        </main>
+
+        <aside className="flex min-h-[620px] flex-col rounded-[8px] border border-[#273244] bg-[#111827]">
+          <div className="border-b border-[#273244] p-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black text-[#F9FAFB]">Debate Room</h2>
+              <Badge tone="live">LIVE</Badge>
             </div>
-          </header>
-          <div className="grid gap-3 p-4">
+            <p className="mt-1 text-sm text-[#9CA3AF]">{thread.participants.toLocaleString("ko-KR")}명 참여중</p>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto p-5">
             {thread.comments.map((item) => (
-              <CommentItem key={item.id} comment={item} />
+              <CommentItem key={item.id} comment={item} dark />
             ))}
           </div>
-          <footer className="border-t border-[#e2e8dd] p-4">
-            <div className="flex flex-col gap-3 md:flex-row">
-              <div className="grid grid-cols-2 gap-2 md:w-48">
-                {(["agree", "disagree"] as const).map((side) => (
-                  <button
-                    key={side}
-                    className={`h-11 rounded-[6px] text-sm font-black ${
-                      stance === side
-                        ? side === "agree"
-                          ? "bg-[#1769aa] text-white"
-                          : "bg-[#c5382c] text-white"
-                        : "bg-[#eef3ea]"
-                    }`}
-                    onClick={() => setStance(side)}
-                    type="button"
-                  >
-                    {side === "agree" ? "찬성" : "반대"}
-                  </button>
-                ))}
-              </div>
-              <input
-                className="h-11 min-w-0 flex-1 rounded-[6px] border border-[#cfdcca] px-3 text-sm font-semibold"
-                onChange={(event) => setComment(event.target.value)}
-                placeholder="의견 또는 대댓글 입력"
-                value={comment}
-              />
-              <button className="h-11 rounded-[6px] bg-[#164a32] px-5 text-sm font-black text-white" type="button">
-                등록
-              </button>
-            </div>
-          </footer>
-        </div>
-        <DetailedAnalysis thread={thread} />
+          <div className="border-t border-[#273244] p-4">
+            <input
+              className="h-11 w-full rounded-[4px] bg-[#1F2937] px-4 text-sm font-semibold text-[#F9FAFB] outline-none"
+              onChange={(event) => setComment(event.target.value)}
+              placeholder="의견을 남겨주세요..."
+              value={comment}
+            />
+          </div>
+        </aside>
       </section>
-    </AppShell>
+    </PublicShell>
   );
 }
 
-export function AlertsPage() {
+export function ProfilePage() {
   return (
-    <AppShell active="alerts">
-      <section className="mx-auto max-w-5xl px-4 py-6">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-          Push Rules
-        </p>
-        <h1 className="mt-2 text-4xl font-black">알림</h1>
-        <div className="mt-6 grid gap-3">
-          {[
-            ["토트넘 이슈", "손흥민 관련 현지 루머가 업데이트됐습니다.", "Tier 2 · Monitoring"],
-            ["누적 토론", "손흥민 거취 토론이 1만 명을 넘었습니다.", "LIVE · 12,842명"],
-            ["맨유 이슈", "브루노 매각 논쟁 투표가 반대 62%로 기울었습니다.", "Poll · Contact"],
-            ["아스날 이슈", "공격수 영입 필요성 투표가 상승 중입니다.", "Interest · Tier 2"],
-          ].map(([title, body, meta]) => (
-            <div key={title} className="rounded-[8px] border border-[#dce5d8] bg-white p-4">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="font-black">{title}</h2>
-                <span className="rounded-[6px] bg-[#eef3ea] px-2 py-1 text-xs font-black text-[#cc3b2f]">
-                  {meta}
-                </span>
-              </div>
-              <p className="mt-2 text-sm font-semibold text-[#4d5a4c]">{body}</p>
+    <PublicShell active="profile">
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-5 lg:grid-cols-[360px_minmax(0,1fr)] lg:px-6">
+        <aside className="rounded-[8px] border border-[#273244] bg-[#111827] p-5">
+          <div className="flex items-center gap-4">
+            <div className="grid size-16 place-items-center rounded-full bg-[#7C3AED] text-3xl font-black text-white">S</div>
+            <div>
+              <h1 className="text-2xl font-black text-[#F9FAFB]">SON_Fan_07</h1>
+              <p className="text-sm font-semibold text-[#9CA3AF]">Tottenham Hotspur</p>
+              <Badge tone="forum">팩트 폭격기</Badge>
             </div>
-          ))}
-        </div>
+          </div>
+          <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+            <Stat value="47" label="댓글" />
+            <Stat value="12" label="토론" />
+            <Stat value="89" label="저장" />
+          </div>
+        </aside>
+        <main className="min-w-0">
+          <SectionHeader title="배지와 활동" description="팬 참여 기록을 기준으로 획득한 배지와 다음 목표를 보여줍니다." />
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              ["성지 예측러", "루머 적중 5회 이상", "#A3E635"],
+              ["팩트 폭격기", "Best Comment 10회 달성", "#7C3AED"],
+              ["전술 분석가", "토론 참여 20회 이상", "#38BDF8"],
+              ["우리팀 수호자", "팀 피드 매일 접속 30일", "#EC4899"],
+              ["반박 장인", "반대 의견 Best 5회", "#F97316"],
+              ["토론왕", "토론 승리 10회", "#A855F7"],
+            ].map(([name, desc, color]) => (
+              <div key={name} className="rounded-[8px] border border-[#273244] bg-[#111827] p-5">
+                <Hex color={color} large />
+                <h3 className="mt-4 text-xl font-black text-[#F9FAFB]">{name}</h3>
+                <p className="mt-1 text-sm font-semibold text-[#9CA3AF]">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </main>
       </section>
-    </AppShell>
+    </PublicShell>
   );
 }
 
 export function AdminPage() {
   return (
-    <AppShell active="admin">
-      <section className="mx-auto grid max-w-[1480px] gap-4 px-4 py-6 lg:grid-cols-[360px_1fr]">
-        <div className="rounded-[8px] border border-[#dce5d8] bg-white p-4">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-            Admin Queue
-          </p>
-          <h1 className="mt-2 text-3xl font-black">검수 대기열</h1>
-          <div className="mt-5 grid gap-2">
-            {adminQueue.map((draft, index) => (
-              <Link
-                key={draft.raw}
-                className="rounded-[8px] border border-[#dce5d8] bg-[#f8faf6] p-3 hover:border-[#164a32]"
-                href={`/admin/edit?draft=${index}`}
-              >
-                <span className="text-xs font-black text-[#cc3b2f]">{draft.source}</span>
-                <span className="mt-1 block text-sm font-black">{draft.suggestion}</span>
-                <span className="mt-2 block text-xs font-bold text-[#5d6a5b]">
-                  {draft.status} · {draft.type}
-                </span>
-              </Link>
-            ))}
+    <main className="min-h-screen bg-[#080A12] px-4 py-6 text-[#F9FAFB] lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-black uppercase text-[#7C3AED]">Admin Dashboard</p>
+            <h1 className="text-3xl font-black sm:text-5xl">Raw Post Inbox / Card News Editor</h1>
           </div>
+          <span className="rounded-full bg-[#F97316] px-4 py-2 text-sm font-black text-[#080A12]">12 pending</span>
         </div>
-        <AdminEditor draftIndex={0} />
-      </section>
-    </AppShell>
+        <div className="grid gap-5 lg:grid-cols-2">
+          <section className="rounded-[8px] border border-[#374151] bg-[#111827] p-5">
+            <h2 className="border-b border-[#273244] pb-3 text-xl font-black">RAW POST INBOX</h2>
+            <div className="mt-4 grid gap-3">
+              {adminQueue.concat(adminQueue).slice(0, 4).map((draft, index) => (
+                <div key={`${draft.raw}-${index}`} className="rounded-[8px] bg-[#1F2937] p-4">
+                  <div className="flex justify-between gap-3">
+                    <h3 className="font-black">@{["FabrizioRomano", "David_Ornstein", "JacobSteinberg", "MattLaw_DT"][index]}</h3>
+                    <span className="text-sm text-[#9CA3AF]">{index ? `${index * 15}min ago` : "2min ago"}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#9CA3AF]">{draft.raw}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <button className="h-8 rounded-[3px] bg-[#A3E635] px-4 text-sm font-black text-[#080A12]" type="button">Accept</button>
+                    <button className="h-8 rounded-[3px] bg-[#EF4444] px-4 text-sm font-black text-white" type="button">Reject</button>
+                    <button className="h-8 rounded-[3px] bg-[#374151] px-4 text-sm text-[#9CA3AF]" type="button">Hold</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+          <section className="rounded-[8px] border border-[#374151] bg-[#111827] p-5">
+            <h2 className="border-b border-[#273244] pb-3 text-xl font-black">CARD NEWS EDITOR</h2>
+            <div className="mt-4 grid grid-cols-4 gap-3">
+              {[1, 2, 3, 4].map((slide) => (
+                <div key={slide} className={`grid aspect-square place-items-center rounded-[8px] border border-[#374151] text-2xl font-black ${slide === 1 ? "bg-[#4C327E] text-[#A3E635]" : "bg-[#1F2937] text-[#374151]"}`}>
+                  {slide}
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 font-mono text-sm text-[#7C3AED]">SLIDE 1 - HOOK</p>
+            <div className="mt-3 grid gap-3">
+              <div className="rounded-[4px] bg-[#1F2937] p-3">손흥민, 토트넘 잔류 확정?</div>
+              <div className="rounded-[4px] bg-[#1F2937] p-3 text-[#9CA3AF]">TIER 1 기자 파브리지오 로마노 발언</div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Badge tone="forum">HOT RUMOR</Badge>
+              <Badge tone="tier1">TIER 1</Badge>
+              <Badge tone="poll">DEBATE</Badge>
+              <Badge tone="official">OFFICIAL</Badge>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
   );
 }
 
 export function AdminEditPage({ draftIndex }: { draftIndex: number }) {
+  void draftIndex;
+  return <AdminPage />;
+}
+
+export function AlertsPage() {
   return (
-    <AppShell active="admin">
-      <section className="mx-auto max-w-5xl px-4 py-6">
-        <AdminEditor draftIndex={draftIndex} />
+    <PublicShell active="feed">
+      <section className="mx-auto max-w-4xl px-4 py-6 lg:px-6">
+        <SectionHeader title="Watch Alerts" description="관심 팀과 선수에 연결된 주요 업데이트입니다." />
+        <div className="mt-4 grid gap-4">
+          {issues.slice(0, 4).map((issue) => (
+            <IssueCard key={issue.id} issue={issue} compact />
+          ))}
+        </div>
       </section>
-    </AppShell>
+    </PublicShell>
   );
 }
 
-function IssueListCard({ issue }: { issue: Issue }) {
-  const [vote, setVote] = useState<VoteSide | undefined>();
+function PublicShell({ active, children }: { active: RouteKey; children: React.ReactNode }) {
+  return (
+    <main className="min-h-screen bg-[#080A12] pb-20 text-[#F9FAFB] md:pb-0">
+      <header className="sticky top-0 z-30 border-b border-[#273244] bg-[#080A12]/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 lg:px-6">
+          <BrandMini />
+          <nav className="hidden items-center gap-1 md:flex">
+            {topNav.map((item) => (
+              <Link
+                key={item.key}
+                className={`rounded-full px-4 py-2 text-sm font-black ${active === item.key ? "bg-[#7C3AED] text-white" : "text-[#9CA3AF] hover:bg-[#111827] hover:text-[#F9FAFB]"
+                  }`}
+                href={item.href}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <Link className="hidden rounded-full bg-[#A3E635] px-4 py-2 text-sm font-black text-[#080A12] sm:block" href="/reels">
+            Reels
+          </Link>
+        </div>
+      </header>
+      {children}
+      <BottomNav active={active} />
+    </main>
+  );
+}
+
+function IssueCard({ issue, compact = false }: { issue: Issue; compact?: boolean }) {
+  const [selected, setSelected] = useState<VoteSide | undefined>();
+  const href = issue.type === "forum" ? `/debate/${issue.id}` : "/reels";
 
   return (
-    <article className="rounded-[8px] border border-[#dce5d8] bg-white p-5 shadow-sm">
-      <div className="flex flex-wrap gap-2">
-        <IssueBadge type={issue.type} />
-        <StatusPill status={issue.status} />
+    <article className="rounded-[8px] border border-[#273244] bg-[#111827] p-4 sm:p-5">
+      <div className="mb-4 overflow-hidden rounded-[6px] bg-[#1F2937]">
+        <img
+          alt={issue.imageAlt}
+          className={`w-full object-cover ${compact ? "h-40" : "h-52 sm:h-64"}`}
+          src={issue.image}
+        />
       </div>
-      <h2 className="mt-4 text-2xl font-black">{issue.title}</h2>
-      <p className="mt-2 text-sm font-semibold leading-6 text-[#4d5a4c]">{issue.summary}</p>
-      {issue.votes ? (
-        <div className="mt-4 rounded-[8px] bg-[#f8faf6] p-3">
-          <VotingBox issue={issue} selected={vote} onVote={setVote} />
+      <Link href={href}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone={issue.type === "normal" ? "tier1" : issue.type}>
+              {issue.type === "poll" ? "POLL" : issue.type === "forum" ? "LIVE" : issue.tier}
+            </Badge>
+            <span className="text-xs font-bold text-[#9CA3AF]">{issue.source}</span>
+          </div>
+          <span className="text-xs font-bold text-[#9CA3AF]">{countComments(issue.comments)} 댓글</span>
         </div>
-      ) : null}
-      <div className="mt-4">
-        <CommentPreview comments={issue.comments} />
-      </div>
+        <h2 className={`mt-3 font-black leading-tight text-[#F9FAFB] ${compact ? "text-xl" : "text-2xl sm:text-3xl"}`}>{issue.title}</h2>
+        <p className="mt-3 text-sm font-semibold leading-6 text-[#9CA3AF]">{issue.summary}</p>
+      </Link>
       <div className="mt-4 flex flex-wrap gap-2">
-        {issue.tags.map((tag) => (
-          <span key={tag} className="rounded-[6px] bg-[#eef3ea] px-2 py-1 text-xs font-black">
-            {tag}
-          </span>
+        {issue.tags.slice(0, compact ? 2 : 4).map((tag) => (
+          <Tag key={tag}>{tag}</Tag>
         ))}
       </div>
+      <a className="mt-3 inline-flex text-xs font-bold text-[#9CA3AF]" href={issue.imageSource} rel="noreferrer" target="_blank">
+        이미지 출처
+      </a>
+      {issue.votes ? (
+        <div className="mt-5">
+          <VotingBox issue={issue} selected={selected} onVote={setSelected} />
+        </div>
+      ) : null}
     </article>
   );
 }
 
-function ShortsCommentPanel({
-  issue,
-  onClose,
-}: {
-  issue: Issue;
-  onClose?: () => void;
-}) {
+function FilterPanel({ personalized }: { personalized: boolean }) {
   return (
-    <div className="flex h-full max-h-[78vh] flex-col bg-white lg:max-h-none">
-      <div className="flex items-center justify-between border-b border-[#e2e8dd] px-4 py-3">
-        <div>
-          <h2 className="text-lg font-black">댓글 {countComments(issue.comments)}</h2>
-          <p className="text-xs font-bold text-[#5d6a5b]">인기순 · 대댓글 포함</p>
-        </div>
-        {onClose ? (
-          <button className="rounded-[6px] bg-[#eef3ea] px-3 py-2 text-sm font-black" onClick={onClose} type="button">
-            닫기
-          </button>
-        ) : null}
-      </div>
-      <div className="flex gap-2 overflow-x-auto px-4 py-3">
-        {["전체", "찬성", "반대", "인기 댓글"].map((chip) => (
-          <button key={chip} className="h-8 shrink-0 rounded-full bg-[#eef3ea] px-3 text-xs font-black" type="button">
-            {chip}
+    <SidePanel title={personalized ? "My Team" : "필터"}>
+      <div className="grid gap-2">
+        {["전체", "HOT RUMOR", "TIER 1", "POLL", "LIVE"].map((item, index) => (
+          <button key={item} className={`side-link text-left ${index === 0 ? "bg-[#7C3AED] text-white" : ""}`} type="button">
+            {item}
           </button>
         ))}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-24">
+    </SidePanel>
+  );
+}
+
+function DebateDigest() {
+  const thread = debateThreads[0];
+  return (
+    <SidePanel title="가장 뜨거운 토론">
+      <Badge tone="forum">{thread.status}</Badge>
+      <h3 className="mt-3 text-xl font-black leading-tight text-[#F9FAFB]">{thread.title}</h3>
+      <p className="mt-2 text-sm leading-6 text-[#9CA3AF]">{thread.analysis.summary}</p>
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <StatCard value={`${thread.votes.agree}%`} label="찬성" />
+        <StatCard value={`${thread.votes.disagree}%`} label="반대" />
+      </div>
+      <Link className="mt-4 inline-flex h-10 items-center rounded-[5px] bg-[#A3E635] px-4 text-sm font-black text-[#080A12]" href={`/debate/${thread.id}`}>
+        토론 입장
+      </Link>
+    </SidePanel>
+  );
+}
+
+function SidePanel({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-[8px] border border-[#273244] bg-[#111827] p-4">
+      <h2 className="mb-4 text-lg font-black text-[#F9FAFB]">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function PreferenceGroup({ label, values }: { label: string; values: string[] }) {
+  return (
+    <div>
+      <p className="mb-2 text-xs font-black uppercase text-[#7C3AED]">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {values.length ? (
+          values.map((value) => (
+            <span key={value} className="rounded-full bg-[#1F2937] px-3 py-2 text-sm font-black text-[#F9FAFB]">
+              {value}
+            </span>
+          ))
+        ) : (
+          <span className="text-sm font-semibold text-[#9CA3AF]">아직 선택하지 않았습니다.</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ title, description, actionHref, actionLabel }: { title: string; description?: string; actionHref?: string; actionLabel?: string }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 className="text-3xl font-black text-[#F9FAFB] sm:text-4xl">{title}</h1>
+        {description ? <p className="mt-2 text-sm font-semibold leading-6 text-[#9CA3AF]">{description}</p> : null}
+      </div>
+      {actionHref && actionLabel ? (
+        <Link className="rounded-full bg-[#1F2937] px-4 py-2 text-sm font-black text-[#F9FAFB]" href={actionHref}>
+          {actionLabel}
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function ShortsCommentPanel({ issue }: { issue: Issue }) {
+  return (
+    <div className="flex h-full flex-col bg-[#111827] text-[#F9FAFB]">
+      <div className="border-b border-[#273244] p-4">
+        <h2 className="text-lg font-black">Comments ({countComments(issue.comments)})</h2>
+        <p className="text-sm text-[#9CA3AF]">Best comments and replies</p>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto p-4">
         {issue.comments.map((comment) => (
-          <CommentItem key={comment.id} comment={comment} />
+          <CommentItem key={comment.id} comment={comment} dark />
         ))}
       </div>
-      <div className="border-t border-[#e2e8dd] bg-white p-3">
-        <div className="flex gap-2">
-          <input
-            className="h-11 min-w-0 flex-1 rounded-full border border-[#cfdcca] px-4 text-sm font-semibold"
-            placeholder="댓글 추가..."
-          />
-          <button className="h-11 rounded-full bg-[#101714] px-4 text-sm font-black text-white" type="button">
-            등록
-          </button>
-        </div>
-      </div>
+      <input className="m-4 h-10 rounded-[4px] bg-[#1F2937] px-4 text-sm outline-none" placeholder="의견을 남겨주세요..." />
     </div>
   );
 }
 
-function CommentPreview({ comments }: { comments: Comment[] }) {
+function CommentItem({ comment, dark = false, compact = false }: { comment: Comment; dark?: boolean; compact?: boolean }) {
   return (
-    <div className="rounded-[8px] border border-[#dce5d8] bg-[#f8faf6] p-3">
-      <p className="text-xs font-black text-[#5d6a5b]">댓글 미리보기</p>
-      {comments.slice(0, 2).map((comment) => (
-        <CommentItem key={comment.id} comment={comment} compact />
-      ))}
-    </div>
-  );
-}
-
-function CommentItem({
-  comment,
-  compact = false,
-}: {
-  comment: Comment;
-  compact?: boolean;
-}) {
-  return (
-    <div className={`${compact ? "mt-3" : "border-b border-[#edf1ea] py-4 last:border-b-0"}`}>
-      <div className="flex gap-3">
-        <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[#164a32] text-xs font-black text-white">
-          {comment.author.slice(0, 1)}
-        </div>
+    <div className={`${compact ? "rounded-[6px] p-3" : "py-3"} ${dark ? "text-[#F9FAFB]" : "text-[#111827]"}`}>
+      <div className="flex items-start gap-3">
+        <CommentAvatar club={comment.club} tone={comment.side ?? "tier1"} />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-black">@{comment.author}</span>
-            <span className="text-xs font-bold text-[#7a8477]">{comment.club}</span>
-            <span className="text-xs font-bold text-[#7a8477]">{comment.age}</span>
-            {comment.side ? (
-              <span
-                className={`rounded-[6px] px-2 py-0.5 text-[11px] font-black text-white ${
-                  comment.side === "agree" ? "bg-[#1769aa]" : "bg-[#c5382c]"
-                }`}
-              >
-                {comment.side === "agree" ? "찬성" : "반대"}
-              </span>
-            ) : null}
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="min-w-0 truncate text-sm font-black">{comment.author}</span>
+            <span className="shrink-0 text-xs text-[#9CA3AF]">{comment.age}</span>
           </div>
-          <p className="mt-1 text-sm font-semibold leading-6 text-[#1f2a1e]">{comment.text}</p>
-          <div className="mt-2 flex gap-4 text-xs font-black text-[#6a7468]">
-            <span>좋아요 {comment.likes}</span>
-            <button type="button">답글</button>
+          <p className={`mt-1 break-words text-sm leading-6 ${dark ? "text-[#F9FAFB]" : "text-[#111827]"}`}>{comment.text}</p>
+          <div className="mt-1 flex min-w-0 gap-3 text-xs font-bold text-[#9CA3AF]">
+            <span className="shrink-0">{comment.likes} likes</span>
+            <button type="button">Reply</button>
           </div>
-          {!compact && comment.replies?.length ? (
-            <div className="mt-3 border-l-2 border-[#dce5d8] pl-3">
-              <button className="mb-2 text-xs font-black text-[#1769aa]" type="button">
-                답글 {comment.replies.length}개 보기
-              </button>
+          {comment.replies?.length ? (
+            <div className="mt-2 border-l border-[#374151] pl-2 sm:pl-3">
               {comment.replies.map((reply) => (
-                <CommentItem key={reply.id} comment={reply} compact />
+                <CommentItem key={reply.id} comment={reply} dark={dark} compact />
               ))}
             </div>
           ) : null}
@@ -675,307 +831,180 @@ function CommentItem({
   );
 }
 
-function DebateCard({ thread }: { thread: DebateThread }) {
-  return (
-    <Link
-      className="rounded-[8px] border border-[#dce5d8] bg-white p-5 shadow-sm hover:border-[#164a32]"
-      href={`/debate/${thread.id}`}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <span className="rounded-[6px] bg-[#f0c46a] px-2 py-1 text-xs font-black">
-          {thread.status}
-        </span>
-        <span className="text-xs font-bold text-[#5d6a5b]">{thread.openedAt}</span>
-      </div>
-      <h2 className="mt-4 text-2xl font-black leading-tight">{thread.title}</h2>
-      <p className="mt-3 text-sm font-bold leading-6 text-[#5d6a5b]">{thread.analysis.summary}</p>
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <Metric label="참여자" value={thread.participants.toLocaleString("ko-KR")} />
-        <Metric label="찬성" value={`${thread.votes.agree}%`} />
-        <Metric label="반대" value={`${thread.votes.disagree}%`} />
-      </div>
-    </Link>
-  );
-}
-
-function DetailedAnalysis({ thread }: { thread: DebateThread }) {
-  return (
-    <aside className="h-fit rounded-[8px] border border-[#dce5d8] bg-white p-4">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-        Deep Analysis
-      </p>
-      <h2 className="mt-1 text-lg font-black">토론 현황과 AI 분석</h2>
-      <VotingMeter votes={thread.votes} />
-      <div className="mt-4 rounded-[8px] bg-[#f8faf6] p-3">
-        <p className="text-sm font-bold leading-6">{thread.analysis.summary}</p>
-      </div>
-      <AnalysisList title="찬성 측 핵심 논리" items={thread.analysis.agreePoints} side="agree" />
-      <AnalysisList title="반대 측 핵심 논리" items={thread.analysis.disagreePoints} side="disagree" />
-      <div className="mt-4">
-        <p className="text-xs font-black text-[#5d6a5b]">키워드</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {thread.analysis.keywords.map((keyword) => (
-            <span key={keyword} className="rounded-[6px] bg-[#eef3ea] px-2 py-1 text-xs font-black">
-              {keyword}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="mt-4 grid gap-2">
-        <InfoRow label="흐름" value={thread.analysis.trend} />
-        <InfoRow label="과열" value={thread.analysis.risk} />
-      </div>
-    </aside>
-  );
-}
-
-function VotingBox({
-  issue,
-  selected,
-  onVote,
-}: {
-  issue: Issue;
-  selected?: VoteSide;
-  onVote: (side: VoteSide) => void;
-}) {
-  return (
-    <div>
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          className={`h-11 rounded-[6px] text-sm font-black ${
-            selected === "agree" ? "bg-[#1769aa] text-white" : "bg-[#e8f2fb] text-[#1769aa]"
-          }`}
-          onClick={() => onVote("agree")}
-          type="button"
-        >
-          찬성
-        </button>
-        <button
-          className={`h-11 rounded-[6px] text-sm font-black ${
-            selected === "disagree" ? "bg-[#c5382c] text-white" : "bg-[#fbebe9] text-[#c5382c]"
-          }`}
-          onClick={() => onVote("disagree")}
-          type="button"
-        >
-          반대
-        </button>
-      </div>
-      {selected && issue.votes ? (
-        <div className="mt-3">
-          <p className="mb-2 text-xs font-black text-[#5d6a5b]">
-            내 투표: {selected === "agree" ? "찬성" : "반대"} · 현재 현황
-          </p>
-          <VotingMeter votes={issue.votes} />
-        </div>
-      ) : (
-        <p className="mt-2 text-xs font-bold text-[#5d6a5b]">투표하면 현황이 표시됩니다.</p>
-      )}
-    </div>
-  );
-}
-
-function VotingMeter({ votes }: { votes: { agree: number; disagree: number; total: number } }) {
-  return (
-    <div className="rounded-[8px] border border-[#dce5d8] bg-white p-3">
-      <div className="flex items-center justify-between text-sm font-black">
-        <span className="text-[#1769aa]">찬성 {votes.agree}%</span>
-        <span className="text-[#c5382c]">반대 {votes.disagree}%</span>
-      </div>
-      <div className="mt-3 flex h-3 overflow-hidden rounded-full bg-[#fbebe9]">
-        <div className="bg-[#1769aa]" style={{ width: `${votes.agree}%` }} />
-        <div className="bg-[#c5382c]" style={{ width: `${votes.disagree}%` }} />
-      </div>
-      <p className="mt-2 text-xs font-bold text-[#5d6a5b]">
-        총 {votes.total.toLocaleString("ko-KR")}표
-      </p>
-    </div>
-  );
-}
-
-function AnalysisList({
-  title,
-  items,
-  side,
-}: {
-  title: string;
-  items: string[];
-  side: VoteSide;
-}) {
-  return (
-    <div className="mt-4">
-      <p className={`text-xs font-black ${side === "agree" ? "text-[#1769aa]" : "text-[#c5382c]"}`}>
-        {title}
-      </p>
-      <div className="mt-2 grid gap-2">
-        {items.map((item) => (
-          <p key={item} className="rounded-[6px] bg-[#f8faf6] p-2 text-sm font-bold leading-6">
-            {item}
-          </p>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AdminEditor({ draftIndex }: { draftIndex: number }) {
-  const draft = adminQueue[draftIndex] ?? adminQueue[0];
-
-  return (
-    <div className="rounded-[8px] border border-[#dce5d8] bg-white p-5">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-[#cc3b2f]">
-        Edit Draft
-      </p>
-      <h2 className="mt-2 text-3xl font-black">{draft.suggestion}</h2>
-      <div className="mt-5 grid gap-4">
-        <label className="grid gap-2 text-sm font-black">
-          원문 감지
-          <textarea
-            className="min-h-24 rounded-[6px] border border-[#cfdcca] p-3 text-sm font-semibold"
-            defaultValue={draft.raw}
-          />
-        </label>
-        <div className="grid gap-3 md:grid-cols-2">
-          <label className="grid gap-2 text-sm font-black">
-            상태값
-            <input
-              className="h-11 rounded-[6px] border border-[#cfdcca] px-3 text-sm font-semibold"
-              defaultValue={draft.status}
-            />
-          </label>
-          <label className="grid gap-2 text-sm font-black">
-            게시물 유형
-            <input
-              className="h-11 rounded-[6px] border border-[#cfdcca] px-3 text-sm font-semibold"
-              defaultValue={draft.type}
-            />
-          </label>
-        </div>
-        <button className="h-11 w-fit rounded-[6px] bg-[#164a32] px-5 text-sm font-black text-white" type="button">
-          게시 승인
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function PreferenceBlock({
-  title,
-  options,
-  selected,
-}: {
-  title: string;
-  options: string[];
-  selected: string[];
-}) {
-  return (
-    <div className="rounded-[8px] border border-[#dce5d8] bg-white p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-black">{title}</h2>
-        <span className="text-xs font-bold text-[#5d6a5b]">{selected.length}개</span>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {options.map((option) => (
-          <button
-            key={option}
-            className={`rounded-[6px] border px-2.5 py-1.5 text-xs font-bold ${
-              selected.includes(option)
-                ? "border-[#164a32] bg-[#164a32] text-white"
-                : "border-[#dce5d8] bg-[#f8faf6] text-[#455143]"
-            }`}
-            type="button"
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function IssueBadge({ type, compact = false }: { type: IssueType; compact?: boolean }) {
-  const label = type === "forum" ? "핫 토론" : type === "poll" ? "투표형" : "일반 소식";
-  const style =
-    type === "forum"
-      ? "bg-[#f0c46a] text-[#101714]"
-      : type === "poll"
-        ? "bg-[#cc3b2f] text-white"
-        : "bg-[#164a32] text-white";
+function CommentAvatar({ club, tone }: { club: string; tone: VoteSide | "tier1" }) {
+  const styles: Record<VoteSide | "tier1", string> = {
+    agree: "bg-[#7C3AED] text-white",
+    disagree: "bg-[#EF4444] text-white",
+    tier1: "bg-[#1F2937] text-[#A3E635] ring-1 ring-[#374151]",
+  };
+  const label = club === "중립" ? "N" : club.slice(0, 1).toUpperCase();
 
   return (
     <span
-      className={`inline-flex rounded-[6px] ${style} ${
-        compact ? "px-2 py-1 text-xs" : "px-3 py-2 text-sm"
-      } font-black`}
+      aria-hidden="true"
+      className={`grid size-9 shrink-0 place-items-center rounded-full text-xs font-black leading-none ${styles[tone]}`}
+      title={club}
     >
       {label}
     </span>
   );
 }
 
-function StatusPill({ status }: { status: RumorStatus }) {
+function AnalysisBox({ thread, expanded = false }: { thread: DebateThread; expanded?: boolean }) {
   return (
-    <span className="inline-flex rounded-[6px] bg-[#101714] px-3 py-1 text-xs font-black text-white">
-      {status} · {statusCopy[status]}
+    <div className="mt-5 rounded-[8px] border border-[#7C3AED] bg-[#1F2937] p-4">
+      <p className="font-mono text-xs text-[#7C3AED]">AI LIVE ANALYSIS</p>
+      <p className="mt-2 text-sm font-bold text-[#F9FAFB]">찬성 {thread.votes.agree}% / 반대 {thread.votes.disagree}%</p>
+      <p className="mt-2 text-sm leading-6 text-[#9CA3AF]">{thread.analysis.summary}</p>
+      {expanded ? (
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <InfoCard label="TREND" value={thread.analysis.trend} />
+          <InfoCard label="RISK" value={thread.analysis.risk} />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function VotingBox({ issue, selected, onVote }: { issue: Issue; selected?: VoteSide; onVote: (side: VoteSide) => void }) {
+  if (!issue.votes) return null;
+
+  if (!selected) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button className="rounded-[6px] bg-[#3F7B1F] p-4 text-left text-sm font-black text-[#A3E635]" onClick={() => onVote("agree")} type="button">
+          <span className="block text-lg">찬성</span>
+          <span className="mt-2 block text-xs leading-5 text-[#F9FAFB]/80">{issue.agreeReason}</span>
+        </button>
+        <button className="rounded-[6px] bg-[#4B1F2E] p-4 text-left text-sm font-black text-[#EC4899]" onClick={() => onVote("disagree")} type="button">
+          <span className="block text-lg">반대</span>
+          <span className="mt-2 block text-xs leading-5 text-[#F9FAFB]/80">{issue.disagreeReason}</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-3">
+      <div className={`poll-row ${selected === "agree" ? "ring-2 ring-[#A3E635]" : ""}`}>
+        <span>찬성</span>
+        <strong>{issue.votes.agree}%</strong>
+      </div>
+      <div className={`poll-row bg-[#4B1F2E] text-[#EC4899] ${selected === "disagree" ? "ring-2 ring-[#EC4899]" : ""}`}>
+        <span>반대</span>
+        <strong>{issue.votes.disagree}%</strong>
+      </div>
+      <p className="text-sm text-[#9CA3AF]">{issue.votes.total.toLocaleString("ko-KR")}명 참여</p>
+    </div>
+  );
+}
+
+function PointList({ title, points, tone }: { title: string; points: string[]; tone: VoteSide }) {
+  return (
+    <section className="rounded-[8px] border border-[#273244] bg-[#1F2937] p-4">
+      <Badge tone={tone}>{title}</Badge>
+      <ul className="mt-3 grid gap-2 text-sm leading-6 text-[#F9FAFB]">
+        {points.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function BottomNav({ active }: { active: RouteKey }) {
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-40 grid h-16 grid-cols-4 border-t border-[#273244] bg-[#080A12] text-center text-xs text-[#9CA3AF] md:hidden">
+      {bottomNav.map((item) => (
+        <Link
+          key={item.key}
+          className={`flex flex-col items-center justify-center gap-1 ${active === item.key ? "text-[#F9FAFB]" : ""}`}
+          href={item.href}
+        >
+          <span className={`size-1.5 rounded-full ${active === item.key ? "bg-[#A3E635]" : "bg-transparent"}`} />
+          {item.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function MetricCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[8px] border border-[#273244] bg-[#111827] p-4">
+      <p className="text-sm font-black text-[#7C3AED]">{label}</p>
+      <p className="mt-2 text-3xl font-black text-[#F9FAFB]">{value}</p>
+    </div>
+  );
+}
+
+function StatCard({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-[6px] bg-[#1F2937] p-3">
+      <p className="text-xl font-black text-[#F9FAFB]">{value}</p>
+      <p className="text-xs font-bold text-[#9CA3AF]">{label}</p>
+    </div>
+  );
+}
+
+function InfoCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[6px] bg-[#1F2937] p-3">
+      <p className="font-mono text-xs text-[#7C3AED]">{label}</p>
+      <p className="mt-1 text-sm font-bold text-[#F9FAFB]">{value}</p>
+    </div>
+  );
+}
+
+function Badge({ tone, children }: { tone: IssueType | VoteSide | "tier1" | "official" | "live"; children: React.ReactNode }) {
+  const styles: Record<string, string> = {
+    normal: "bg-[#9CA3AF] text-[#080A12]",
+    poll: "bg-[#F97316] text-[#080A12]",
+    forum: "bg-[#EC4899] text-[#080A12]",
+    agree: "bg-[#7C3AED] text-white",
+    disagree: "bg-[#EF4444] text-white",
+    tier1: "bg-[#7C3AED] text-white",
+    official: "bg-[#A3E635] text-[#080A12]",
+    live: "bg-[#EF4444] text-white",
+  };
+  return (
+    <span className={`inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-1 text-[11px] font-black ${styles[tone]}`}>
+      {children}
     </span>
   );
 }
 
-function Argument({
-  label,
-  text,
-  side,
-}: {
-  label: string;
-  text: string;
-  side: VoteSide;
-}) {
+function Tag({ children }: { children: React.ReactNode }) {
+  return <span className="rounded-full bg-[#1F2937] px-3 py-1 text-xs font-bold text-[#A855F7]">{children}</span>;
+}
+
+function BrandMini() {
   return (
-    <div
-      className={`rounded-[8px] border bg-white/85 p-4 ${
-        side === "agree" ? "border-[#8fc5ee]" : "border-[#edaaa3]"
-      }`}
-    >
-      <p className={`text-xs font-black ${side === "agree" ? "text-[#1769aa]" : "text-[#c5382c]"}`}>
-        {label}
-      </p>
-      <p className="mt-2 text-sm font-bold leading-6 text-[#263226]">{text}</p>
-    </div>
+    <Link className="flex items-center gap-2" href="/home">
+      <span className="h-8 w-1 bg-[#A3E635]" />
+      <span className="font-mono text-2xl font-black">TIER ONE</span>
+    </Link>
   );
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+function Hex({ color, large = false }: { color: string; large?: boolean }) {
   return (
-    <div className="rounded-[6px] bg-[#f8faf6] p-2">
-      <p className="text-xs font-black text-[#5d6a5b]">{label}</p>
-      <p className="mt-1 text-sm font-bold leading-6">{value}</p>
-    </div>
+    <span
+      className={`block ${large ? "size-14" : "size-8"}`}
+      style={{ background: color, clipPath: "polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%)" }}
+    />
   );
 }
 
-function Metric({
-  label,
-  value,
-  inverted = false,
-}: {
-  label: string;
-  value: string;
-  inverted?: boolean;
-}) {
+function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div
-      className={`rounded-[6px] px-3 py-2 ${
-        inverted ? "bg-white/10 text-white" : "bg-white/80 text-[#101714]"
-      }`}
-    >
-      <p className="text-[11px] font-black opacity-70">{label}</p>
-      <p className="text-sm font-black">{value}</p>
+    <div>
+      <p className="text-3xl font-black text-[#F9FAFB]">{value}</p>
+      <p className="text-sm text-[#9CA3AF]">{label}</p>
     </div>
   );
 }
 
 function countComments(comments: Comment[]): number {
-  return comments.reduce(
-    (total, comment) => total + 1 + (comment.replies ? countComments(comment.replies) : 0),
-    0,
-  );
+  return comments.reduce((total, comment) => total + 1 + (comment.replies ? countComments(comment.replies) : 0), 0);
 }

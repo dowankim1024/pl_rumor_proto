@@ -1,5 +1,5 @@
-import { HomePage } from "./prototype-ui";
+import { OnboardingPage } from "./prototype-ui";
 
 export default function Home() {
-  return <HomePage />;
+  return <OnboardingPage />;
 }

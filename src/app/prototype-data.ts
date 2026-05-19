@@ -35,6 +35,9 @@ export type Issue = {
   tags: string[];
   comments: Comment[];
   saves: number;
+  image: string;
+  imageAlt: string;
+  imageSource: string;
   votes?: { agree: number; disagree: number; total: number };
   participants?: number;
   agreeReason?: string;
@@ -101,6 +104,12 @@ const commonReplies: Comment[] = [
   },
 ];
 
+const commonsImage = (fileName: string) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=1200`;
+
+const commonsSource = (fileName: string) =>
+  `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(fileName).replaceAll("%20", "_")}`;
+
 export const issues: Issue[] = [
   {
     id: "son-future",
@@ -115,6 +124,9 @@ export const issues: Issue[] = [
     players: ["손흥민"],
     tags: ["#토트넘", "#손흥민", "#핫토론"],
     saves: 3820,
+    image: commonsImage("Tottenham Hotspur Stadium.jpg"),
+    imageAlt: "Tottenham Hotspur Stadium exterior",
+    imageSource: commonsSource("Tottenham Hotspur Stadium.jpg"),
     votes: { agree: 43, disagree: 57, total: 12842 },
     participants: 12842,
     agreeReason: "커리어 마지막 전성기에 우승 가능성이 높은 팀을 선택해야 한다.",
@@ -165,6 +177,9 @@ export const issues: Issue[] = [
     players: ["브루노"],
     tags: ["#맨유", "#브루노", "#이적시장"],
     saves: 1840,
+    image: commonsImage("Old Trafford (1).jpg"),
+    imageAlt: "Old Trafford stadium",
+    imageSource: commonsSource("Old Trafford (1).jpg"),
     votes: { agree: 38, disagree: 62, total: 8042 },
     agreeReason: "높은 이적료를 받을 수 있는 마지막 시점일 수 있다.",
     disagreeReason: "현재 맨유에서 창의성을 대체하기 어렵다.",
@@ -204,6 +219,9 @@ export const issues: Issue[] = [
     players: [],
     tags: ["#토트넘", "#센터백", "#스카우팅"],
     saves: 980,
+    image: commonsImage("Heading into the Tottenham Hotspur Stadium.jpg"),
+    imageAlt: "Entrance to Tottenham Hotspur Stadium",
+    imageSource: commonsSource("Heading into the Tottenham Hotspur Stadium.jpg"),
     comments: [
       {
         id: "cb-c1",
@@ -238,6 +256,9 @@ export const issues: Issue[] = [
     players: ["사카", "외데고르"],
     tags: ["#아스날", "#우승경쟁", "#공격수"],
     saves: 2120,
+    image: commonsImage("Emirates Stadium (5451730429).jpg"),
+    imageAlt: "Emirates Stadium during a football match",
+    imageSource: commonsSource("Emirates Stadium (5451730429).jpg"),
     votes: { agree: 68, disagree: 32, total: 9210 },
     agreeReason: "팽팽한 경기에서 한 골을 해결할 선수가 필요하다.",
     disagreeReason: "현재 구조를 유지하고 미드필더 뎁스를 늘리는 쪽이 낫다.",
@@ -277,6 +298,9 @@ export const issues: Issue[] = [
     players: ["팔머"],
     tags: ["#첼시", "#유망주", "#PSR"],
     saves: 730,
+    image: commonsImage("Stamford Bridge, Chelsea.jpg"),
+    imageAlt: "Stamford Bridge Chelsea stadium",
+    imageSource: commonsSource("Stamford Bridge, Chelsea.jpg"),
     comments: [
       {
         id: "che-c1",
@@ -310,6 +334,9 @@ export const issues: Issue[] = [
     players: ["살라"],
     tags: ["#리버풀", "#살라", "#세대교체"],
     saves: 1650,
+    image: commonsImage("Anfield Stadium.jpg"),
+    imageAlt: "Anfield stadium exterior",
+    imageSource: commonsSource("Anfield Stadium.jpg"),
     participants: 6320,
     votes: { agree: 59, disagree: 41, total: 6320 },
     agreeReason: "핵심 의존도를 낮추는 준비가 필요하다.",
@@ -350,6 +377,9 @@ export const issues: Issue[] = [
     players: ["홀란드"],
     tags: ["#맨시티", "#규정", "#전력평가"],
     saves: 1260,
+    image: commonsImage("Etihad Man. City Stadium.jpg"),
+    imageAlt: "Etihad Stadium, Manchester City home ground",
+    imageSource: commonsSource("Etihad Man. City Stadium.jpg"),
     participants: 5810,
     votes: { agree: 47, disagree: 53, total: 5810 },
     agreeReason: "구단 리스크는 선수단 유지에도 영향을 줄 수 있다.",
@@ -389,6 +419,9 @@ export const issues: Issue[] = [
     players: [],
     tags: ["#뉴캐슬", "#PSR", "#이적시장"],
     saves: 640,
+    image: commonsImage("Newcastle st-james-park stadium.jpg"),
+    imageAlt: "St James Park Newcastle stadium",
+    imageSource: commonsSource("Newcastle st-james-park stadium.jpg"),
     comments: [
       {
         id: "new-c1",
@@ -414,6 +447,9 @@ export const issues: Issue[] = [
     players: [],
     tags: ["#브라이튼", "#전술", "#감독인터뷰"],
     saves: 430,
+    image: commonsImage("Falmer Stadium Panorama.jpg"),
+    imageAlt: "Falmer Stadium panorama near Brighton",
+    imageSource: commonsSource("Falmer Stadium Panorama.jpg"),
     comments: [
       {
         id: "bri-c1",
@@ -439,6 +475,9 @@ export const issues: Issue[] = [
     players: ["팔머"],
     tags: ["#첼시", "#팔머", "#전술"],
     saves: 980,
+    image: commonsImage("Stamford Bridge, Chelsea.jpg"),
+    imageAlt: "Stamford Bridge Chelsea stadium",
+    imageSource: commonsSource("Stamford Bridge, Chelsea.jpg"),
     votes: { agree: 72, disagree: 28, total: 7440 },
     agreeReason: "팀에서 가장 확실한 차이를 만드는 선수다.",
     disagreeReason: "의존도가 높아질수록 상대 대응도 쉬워진다.",

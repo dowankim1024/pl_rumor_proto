@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex h-12 items-center rounded-[5px] bg-[#7C3AED] px-5 text-sm font-black text-white;
+  }
+
+  .btn-secondary {
+    @apply inline-flex h-12 items-center rounded-[5px] border border-[#374151] bg-[#111827] px-5 text-sm font-black text-[#F9FAFB];
+  }
+
+  .action-pill {
+    @apply flex h-11 min-w-16 items-center justify-center rounded-full bg-[#1F2937] px-4 text-sm font-black text-[#F9FAFB] shadow-lg;
+  }
+
+  .poll-row {
+    @apply flex h-11 items-center justify-between rounded-[4px] bg-[#3F7B1F] px-4 text-sm font-black text-[#A3E635];
+  }
+
+  .side-link {
+    @apply block rounded-[6px] bg-[#1F2937] px-4 py-3 text-sm font-black text-[#F9FAFB];
+  }
+}
