@@ -22,12 +22,23 @@ export type Comment = {
   replies?: Comment[];
 };
 
+export type SourceTweet = {
+  author: string;
+  handle: string;
+  initials: string;
+  tier: "1" | "2" | "3";
+  timeAgo: string;
+  text: string;
+  url: string;
+};
+
 export type Issue = {
   id: string;
   type: IssueType;
   title: string;
   summary: string;
   source: string;
+  tweet: SourceTweet;
   tier: "Tier 1" | "Tier 2" | "Tier 3";
   status: RumorStatus;
   clubs: string[];
@@ -110,6 +121,23 @@ const commonsImage = (fileName: string) =>
 const commonsSource = (fileName: string) =>
   `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(fileName).replaceAll("%20", "_")}`;
 
+const tweet = (
+  author: string,
+  handle: string,
+  initials: string,
+  tier: SourceTweet["tier"],
+  timeAgo: string,
+  text: string,
+): SourceTweet => ({
+  author,
+  handle,
+  initials,
+  tier,
+  timeAgo,
+  text,
+  url: `https://x.com/${handle.replace("@", "")}`,
+});
+
 export const issues: Issue[] = [
   {
     id: "son-future",
@@ -118,6 +146,14 @@ export const issues: Issue[] = [
     summary:
       "계약 기간, 나이, 팀의 우승 가능성을 두고 팬들의 의견이 크게 갈리고 있다. 현지 보도는 아직 관찰 단계로 정리된다.",
     source: "London football desk",
+    tweet: tweet(
+      "London Football Desk",
+      "@LondonFootDesk",
+      "LF",
+      "2",
+      "3분 전",
+      "Tottenham are still monitoring Son Heung-min's long-term future. No formal exit talks at this stage, but the topic is being watched closely around the club.",
+    ),
     tier: "Tier 2",
     status: "Monitoring",
     clubs: ["토트넘"],
@@ -171,6 +207,14 @@ export const issues: Issue[] = [
     summary:
       "리빌딩과 재정 균형을 위해 핵심 선수 매각 가능성이 거론된다. 확정 단계가 아닌 현지 논의 수준이다.",
     source: "The Athletic / 현지 기자",
+    tweet: tweet(
+      "United Market Watch",
+      "@UtdMarketWatch",
+      "UM",
+      "1",
+      "7분 전",
+      "Manchester United are not actively pushing Bruno Fernandes out, but a major summer bid would force an internal discussion due to squad rebuild and financial planning.",
+    ),
     tier: "Tier 1",
     status: "Contact",
     clubs: ["맨유"],
@@ -213,6 +257,14 @@ export const issues: Issue[] = [
     summary:
       "여름 이적시장을 앞두고 센터백 보강 후보를 검토 중이다. 아직 공식 제안 단계는 아니다.",
     source: "현지 기자 / 해외 매체",
+    tweet: tweet(
+      "Spurs Transfer Feed",
+      "@SpursTransferFeed",
+      "ST",
+      "2",
+      "12분 전",
+      "Tottenham have added another centre-back profile to their summer list. Scouting reports are active, but there is no official proposal yet.",
+    ),
     tier: "Tier 2",
     status: "Monitoring",
     clubs: ["토트넘"],
@@ -250,6 +302,14 @@ export const issues: Issue[] = [
     summary:
       "득점 분산은 강점이지만 박스 안 결정력에 대한 의문은 계속된다. 여름 우선순위를 두고 논쟁이 이어진다.",
     source: "North London beat",
+    tweet: tweet(
+      "North London Beat",
+      "@NorthLondonBeat",
+      "NL",
+      "2",
+      "18분 전",
+      "Arsenal's recruitment team continues to assess striker options. Internal debate remains: elite finisher or midfield depth first?",
+    ),
     tier: "Tier 2",
     status: "Interest",
     clubs: ["아스날"],
@@ -292,6 +352,14 @@ export const issues: Issue[] = [
     summary:
       "구단은 장기 계약 기반 유망주 투자를 계속 검토 중이다. 단기 성적 압박과 재정 규정이 변수로 남아 있다.",
     source: "Club correspondent",
+    tweet: tweet(
+      "Bridge Correspondent",
+      "@BridgeCorrespond",
+      "BC",
+      "3",
+      "25분 전",
+      "Chelsea remain committed to the young-player strategy, though short-term performance pressure is now part of every recruitment meeting.",
+    ),
     tier: "Tier 3",
     status: "Talks",
     clubs: ["첼시"],
@@ -328,6 +396,14 @@ export const issues: Issue[] = [
     summary:
       "살라의 영향력은 여전하지만 계약과 세대교체를 동시에 고려해야 한다는 현지 분석이 늘고 있다.",
     source: "Merseyside reporter",
+    tweet: tweet(
+      "Merseyside Reporter",
+      "@MerseyReporter",
+      "MR",
+      "2",
+      "31분 전",
+      "Liverpool know Mohamed Salah is still decisive, but succession planning is already a live recruitment topic behind the scenes.",
+    ),
     tier: "Tier 2",
     status: "Interest",
     clubs: ["리버풀"],
@@ -371,6 +447,14 @@ export const issues: Issue[] = [
     summary:
       "징계 가능성과 별개로 현재 전력 평가는 분리해야 한다는 의견과, 구단 리스크를 함께 봐야 한다는 의견이 맞선다.",
     source: "Financial football desk",
+    tweet: tweet(
+      "Football Finance Desk",
+      "@FootballFinDesk",
+      "FF",
+      "2",
+      "36분 전",
+      "Manchester City's off-pitch case remains a strategic risk factor, even while sporting staff insist current squad assessment should be separated from legal noise.",
+    ),
     tier: "Tier 2",
     status: "Monitoring",
     clubs: ["맨시티"],
@@ -413,6 +497,14 @@ export const issues: Issue[] = [
     summary:
       "재정 규정 대응을 위해 일부 선수의 제안을 들을 수 있다는 보도가 나왔다. 구단은 공식 입장을 내지 않았다.",
     source: "Northern football desk",
+    tweet: tweet(
+      "Northern Football Desk",
+      "@NorthernFootDesk",
+      "NF",
+      "2",
+      "44분 전",
+      "Newcastle may listen to offers for selected players as PSR planning continues. Club sources are not treating this as a fire sale.",
+    ),
     tier: "Tier 2",
     status: "Interest",
     clubs: ["뉴캐슬"],
@@ -441,6 +533,14 @@ export const issues: Issue[] = [
     summary:
       "다음 시즌에는 빌드업 속도와 측면 전개를 조정할 수 있다는 발언이 나왔다.",
     source: "Club media",
+    tweet: tweet(
+      "Brighton Club Feed",
+      "@BrightonClubFeed",
+      "BF",
+      "1",
+      "52분 전",
+      "Brighton staff have hinted at tactical adjustments next season, with faster build-up phases and wider attacking rotations under review.",
+    ),
     tier: "Tier 1",
     status: "Official",
     clubs: ["브라이튼"],
@@ -469,6 +569,14 @@ export const issues: Issue[] = [
     summary:
       "팔머 의존도가 높아졌지만, 오히려 명확한 중심을 세워야 한다는 의견도 많다.",
     source: "London tactics column",
+    tweet: tweet(
+      "London Tactics Column",
+      "@LondonTactics",
+      "LT",
+      "2",
+      "1시간 전",
+      "Chelsea's attacking plan increasingly runs through Cole Palmer. The question inside analysis circles: build around it or reduce the dependency?",
+    ),
     tier: "Tier 2",
     status: "Monitoring",
     clubs: ["첼시"],

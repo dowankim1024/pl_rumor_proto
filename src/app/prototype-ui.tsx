@@ -41,14 +41,20 @@ export function HomePage() {
     <PublicShell active="home">
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-6 lg:py-10">
         <div className="min-w-0">
-          <div className="rounded-[8px] border border-[#273244] bg-[#111827] p-5 sm:p-7">
+          <div className="live-surface relative overflow-hidden rounded-[8px] border border-[#273244] bg-[#111827] p-5 sm:p-7">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#EF4444] to-transparent" />
             <Badge tone="live">LIVE RUMOR HUB</Badge>
             <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight text-[#F9FAFB] sm:text-6xl">
-              프리미어리그 루머를 넘기고, 검증하고, 토론하세요
+              프리미어리그 속보를 가장 빠르게 잡아내세요
             </h1>
             <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-[#9CA3AF]">
               TIER ONE은 트위터/X의 공신력 있는 축구 기자 트윗을 가장 빠르게 수집해 이슈 카드, 투표, 대댓글 토론, 팀 맞춤 피드로 정리하는 PL 루머 피드입니다.
             </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <RealtimeSignal label="Tweet Watch" value="24/7" />
+              <RealtimeSignal label="Avg. pickup" value="2m" />
+              <RealtimeSignal label="Source tiering" value="T1-T3" />
+            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link className="btn-primary" href="/reels">
                 릴스 피드 보기
@@ -186,6 +192,7 @@ function ReelScreen({
         <div className="rounded-[8px] border border-[#273244] bg-[#111827]/90 p-5 shadow-2xl backdrop-blur sm:p-7">
           <h1 className="text-3xl font-black leading-tight sm:text-5xl">{issue.title}</h1>
           <p className="mt-4 text-sm font-semibold leading-7 text-[#9CA3AF] sm:text-base">{issue.summary}</p>
+          <SourceTweetCard issue={issue} compact />
           <div className="mt-5 flex flex-wrap gap-2">
             <Tag>{issue.status}</Tag>
             {issue.tags.slice(0, 3).map((tag) => (
@@ -427,6 +434,9 @@ export function DebatePage() {
                     </div>
                     <h2 className="mt-3 text-2xl font-black leading-tight text-[#F9FAFB]">{thread.title}</h2>
                     <p className="mt-2 text-sm font-semibold leading-6 text-[#9CA3AF]">{thread.analysis.summary}</p>
+                    {issues.find((issue) => issue.id === thread.issueId) ? (
+                      <SourceTweetCard issue={issues.find((issue) => issue.id === thread.issueId) ?? issues[0]} compact />
+                    ) : null}
                     <div className="mt-5 grid gap-3 sm:grid-cols-3">
                       <StatCard value={`${thread.votes.agree}%`} label="찬성" />
                       <StatCard value={`${thread.votes.disagree}%`} label="반대" />
@@ -477,6 +487,7 @@ export function DebateDetailPage({ debateId }: { debateId: string }) {
           </div>
           <h1 className="mt-4 text-3xl font-black leading-tight text-[#F9FAFB] sm:text-5xl">{thread.title}</h1>
           <p className="mt-4 text-base font-semibold leading-7 text-[#9CA3AF]">{issue.summary}</p>
+          <SourceTweetCard issue={issue} />
           <div className="mt-6 grid gap-3 sm:grid-cols-4">
             <InfoCard label="STAGE" value={issue.status} />
             <InfoCard label="TEAM" value={issue.clubs.join(", ")} />
@@ -661,9 +672,75 @@ function PublicShell({ active, children }: { active: RouteKey; children: React.R
           </Link>
         </div>
       </header>
+      <LiveTicker />
       {children}
       <BottomNav active={active} />
     </main>
+  );
+}
+
+function LiveTicker() {
+  const tickerItems = issues
+    .slice(0, 6)
+    .map((issue) => `${issue.tweet.timeAgo} · ${issue.tweet.author}: ${issue.title}`)
+    .join("   /   ");
+
+  return (
+    <div className="overflow-hidden border-b border-[#171827] bg-[#050508] py-2">
+      <div className="live-ticker text-xs font-bold text-[#6B6F88]">
+        <span className="mx-4 text-[#EF4444]">● LIVE SOURCE SCAN</span>
+        {tickerItems}
+        <span className="mx-4 text-[#EF4444]">● LIVE SOURCE SCAN</span>
+        {tickerItems}
+      </div>
+    </div>
+  );
+}
+
+function RealtimeSignal({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[6px] border border-[#1E1E2A] bg-[#0E0E1A] p-3">
+      <div className="flex items-center gap-2">
+        <span className="relative flex size-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#EF4444] opacity-75" />
+          <span className="relative inline-flex size-2 rounded-full bg-[#EF4444]" />
+        </span>
+        <p className="text-xs font-black uppercase text-[#6B6F88]">{label}</p>
+      </div>
+      <p className="mt-2 text-2xl font-black text-[#F9FAFB]">{value}</p>
+    </div>
+  );
+}
+
+function SourceTweetCard({ issue, compact = false }: { issue: Issue; compact?: boolean }) {
+  return (
+    <a
+      className={`source-tweet mt-4 block rounded-[8px] border border-[#1E1E2A] bg-[#0E0E1A] ${compact ? "p-3" : "p-4"}`}
+      href={issue.tweet.url}
+      rel="noreferrer"
+      target="_blank"
+    >
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#1E1E2E] text-xs font-black text-[#F4A100]">
+          {issue.tweet.initials}
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-black text-[#F9FAFB]">{issue.tweet.author}</p>
+          <p className="truncate text-xs font-bold text-[#4A4A6A]">{issue.tweet.handle}</p>
+        </div>
+        <span className="ml-auto shrink-0 rounded-[4px] bg-[#2A1F00] px-2 py-1 text-[10px] font-black text-[#F4A100]">
+          T{issue.tweet.tier}
+        </span>
+        <span className="shrink-0 text-xs font-bold text-[#4A4A6A]">{issue.tweet.timeAgo}</span>
+      </div>
+      <p className={`mt-3 font-mono text-xs leading-6 text-[#8B8FA8] ${compact ? "line-clamp-3" : ""}`}>
+        {issue.tweet.text}
+      </p>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <span className="text-[10px] font-black uppercase tracking-widest text-[#EF4444]">Captured from X</span>
+        <span className="text-xs font-black text-[#F9FAFB]">원문 보기 →</span>
+      </div>
+    </a>
   );
 }
 
@@ -693,6 +770,7 @@ function IssueCard({ issue, compact = false }: { issue: Issue; compact?: boolean
         <h2 className={`mt-3 font-black leading-tight text-[#F9FAFB] ${compact ? "text-xl" : "text-2xl sm:text-3xl"}`}>{issue.title}</h2>
         <p className="mt-3 text-sm font-semibold leading-6 text-[#9CA3AF]">{issue.summary}</p>
       </Link>
+      <SourceTweetCard issue={issue} compact={compact} />
       <div className="mt-4 flex flex-wrap gap-2">
         {issue.tags.slice(0, compact ? 2 : 4).map((tag) => (
           <Tag key={tag}>{tag}</Tag>

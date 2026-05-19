@@ -45,4 +45,36 @@ body {
   .side-link {
     @apply block rounded-[6px] bg-[#1F2937] px-4 py-3 text-sm font-black text-[#F9FAFB];
   }
+
+  .live-surface {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.08), 0 24px 80px -40px rgba(239, 68, 68, 0.55);
+  }
+
+  .source-tweet {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: border-color 160ms ease, transform 160ms ease, background-color 160ms ease;
+  }
+
+  .source-tweet:hover {
+    border-color: rgba(244, 161, 0, 0.45);
+    background-color: #111122;
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes liveTicker {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.live-ticker {
+  display: inline-block;
+  min-width: 200%;
+  white-space: nowrap;
+  animation: liveTicker 32s linear infinite;
 }
